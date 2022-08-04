@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # apps
+    'app.apps.AppConfig',
     'usuarios.apps.UsuariosConfig',
     'core.apps.CoreConfig',
 ]
@@ -131,7 +133,7 @@ MESSAGES_TAGS = {
 }
 
 LOGIN_URL= 'usuarios:login'
-LOGOUT_REDIRECT_URL = 'core:home'
+LOGOUT_REDIRECT_URL = 'app:home'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
