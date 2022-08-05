@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<body class="container d-flex flex-column h-100 justify-content-center align-items-center">
+    
+  <form action="{% url 'usuarios:criar_conta' %}" method="post" class="col-4">
+    {% csrf_token %}
+      <div class="mb-3">
+        <img src="" alt="">
+      </div>
+    
+      {% include 'core/mensagens.html' %}
+    
+      {{form.as_p}}
+      <button type="submit" class="btn btn-primary w-100">Criar conta</button>
+  </form>
+  
+</body>
+{% endblock %}

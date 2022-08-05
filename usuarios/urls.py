@@ -5,5 +5,5 @@ app_name = 'usuarios'
 
 urlpatterns = [
     path('', views.login, name="login"),
-    # path(''),
+    path('criar-conta/', views.criar_conta, name="criar_conta"),
 ]
