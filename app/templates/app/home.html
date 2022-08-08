@@ -2,4 +2,7 @@
 {% block content %}
 {% include 'core/mensagens.html' %}
   <h1>Home</h1>
+  {% if user.is_authenticated %}
+  <p>Olá {{user.first_name}}</p>
+  {% endif %}
 {% endblock%}
