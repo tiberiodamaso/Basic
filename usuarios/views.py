@@ -5,6 +5,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from usuarios.models import Usuario
 from usuarios.forms import RegistraUsuarioForm
+from django.http import HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.core.mail import EmailMessage
 
 
 def login(request):
@@ -35,7 +42,6 @@ def login(request):
 
 
 def criar_conta(request):
-    form = RegistraUsuarioForm()
     if request.user.is_anonymous:
         if request.method == 'POST':
             form = RegistraUsuarioForm(request.POST)
@@ -46,17 +52,88 @@ def criar_conta(request):
                 last_name = form.cleaned_data.get('last_name')
                 password1 = form.cleaned_data.get('password1')
                 password2 = form.cleaned_data.get('password2')
-                form.save()
-                novo_usuario = authenticate(
-                    username=username, password=password1)
-                if novo_usuario is not None:
-                    auth_login(request, novo_usuario)
-                    messages.success(
-                        request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
-                    return redirect('app:home')
+                usuario = form.save(commit=False)
+                usuario.is_active = False
+                usuario.save()
+                current_site = get_current_site(request)
+                message = render_to_string('usuarios/email-ativacao.html', {
+                    'usuario': usuario, 'dominio': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
+                    'token': account_activation_token.make_token(usuario),
+                })
+                
+                # Sending activation link in terminal
+                subject = 'Ative a sua conta'
+                usuario.email_user(subject, message)
+                # mail_subject = 'Activate your blog account.'
+                # to_email = form.cleaned_data.get('email')
+                # email = EmailMessage(mail_subject, message, to=[to_email])
+                # email.send()
+                return HttpResponse('Por favor confirme seu endereço de email para ativar sua conta.')
+                # return render(request, 'email-ativacao.html')
+            
             else:
+                form = RegistraUsuarioForm()
                 return render(request, 'usuarios/criar-conta.html', {'form': form})
         else:
+            form = RegistraUsuarioForm()
             return render(request, 'usuarios/criar-conta.html', {'form': form})
     else:
         return redirect('app:home')
+
+
+def ativar_conta(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        usuario = Usuario.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Usuario.DoesNotExist):
+        usuario = None
+    if usuario is not None and account_activation_token.check_token(usuario, token):
+        usuario.is_active = True
+        usuario.save()
+        auth_login(request, usuario)
+        return HttpResponse('Obrigado por confirmar seu e-mail. Agora você pode fazer login.')
+    else:
+        return HttpResponse('Link de ativação inválido!')
+
+
+
+# novo_usuario = authenticate(
+            #     username=username, password=password1)
+            # if novo_usuario is not None:
+            #     auth_login(request, novo_usuario)
+            #     messages.success(
+            #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
+            #     return redirect('app:home')# novo_usuario = authenticate(
+            #     username=username, password=password1)
+            # if novo_usuario is not None:
+            #     auth_login(request, novo_usuario)
+            #     messages.success(
+            #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
+            #     return redirect('app:home')
+
+
+# def signup(request):
+#     if request.method == 'POST':
+#         form = SignupForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.is_active = False
+#             user.save()
+#             current_site = get_current_site(request)
+#             message = render_to_string('acc_active_email.html', {
+#                 'user': user, 'domain': current_site.domain,
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'token': account_activation_token.make_token(user),
+#             })
+#             # Sending activation link in terminal
+#             # user.email_user(subject, message)
+#             mail_subject = 'Activate your blog account.'
+#             to_email = form.cleaned_data.get('email')
+#             email = EmailMessage(mail_subject, message, to=[to_email])
+#             email.send()
+#             return HttpResponse('Please confirm your email address to complete the registration.')
+#             # return render(request, 'acc_active_sent.html')
+#     else:
+#         form = SignupForm()
+#     return render(request, 'signup.html', {'form': form})
