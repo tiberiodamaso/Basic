@@ -43,7 +43,7 @@ def login(request):
 
 
 class Logout(LoginRequiredMixin, LogoutView):
-    success_url = reverse_lazy('app:home')
+    next_page = reverse_lazy('app:home')
 
 def criar_conta(request):
     if request.user.is_anonymous:
