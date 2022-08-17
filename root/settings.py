@@ -128,12 +128,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
-MESSAGES_TAGS = {
-    messages.ERROR: 'danger'
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
 }
 
 LOGIN_URL= 'usuarios:login'
-LOGOUT_REDIRECT_URL = 'app:home'
+# LOGOUT_REDIRECT_URL = 'app:home'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

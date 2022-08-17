@@ -4,7 +4,7 @@
   <form action="{% url 'usuarios:login' %}" method="post" class="text-center">
     {% csrf_token %}
       <div class="mb-3">
-        <!-- <img src=" static 'core/img/logo-100.png' " /> -->
+        <img src="https://via.placeholder.com/150" />
       </div>
     
       {% include 'core/mensagens.html' %}
@@ -17,5 +17,7 @@
       </div>
       <button type="submit" class="btn btn-primary w-100">Login</button>
   </form>
+  <a href="{% url 'usuarios:criar-conta' %}" class="text-decoration-none">Criar conta</a>
+  <a href="#" class="text-decoration-none">Esqueci a senha</a>
 </body>
 {% endblock %}

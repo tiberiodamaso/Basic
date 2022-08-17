@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import Usuario
 from django import forms
 
@@ -24,3 +24,13 @@ class RegistraUsuarioForm(UserCreationForm):
         self.fields['username'].label = 'Nome de usuário'
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['class'] = 'form-control'
+
+
+class TrocaSenhaForm(PasswordChangeForm):
+    old_password = forms.CharField(label='Senha antiga', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password1 = forms.CharField(label='Nova senha', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password2 = forms.CharField(label='Confirmação', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Usuario
+        fields = ['old_password', 'new_password1', 'new_password2']

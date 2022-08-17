@@ -1,10 +1,14 @@
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.views import PasswordChangeView, LogoutView
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from usuarios.models import Usuario
-from usuarios.forms import RegistraUsuarioForm
+from usuarios.forms import RegistraUsuarioForm, TrocaSenhaForm
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
@@ -20,26 +24,26 @@ def login(request):
         password = request.POST['password']
 
         if email == '' or password == '':
-            messages.error(
-                request, 'Os campos email e senha não podem ser vazios')
+            messages.error(request, 'Os campos email e senha não podem ser vazios')
             return redirect('usuarios:login')
 
         if Usuario.objects.filter(email=email).exists():
             username = Usuario.objects.get(email=email).username
-            user = auth.authenticate(
-                request, username=username, password=password)
+            user = auth.authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
                 return redirect('app:home')
             else:
-                messages.error(
-                    request, 'Usuário não cadastrado')
+                messages.error(request, 'Usuário não cadastrado')
                 return redirect('usuarios:login')
         else:
             messages.error(request, 'Usuário não cadastrado')
 
     return render(request, 'usuarios/login.html')
 
+
+class Logout(LoginRequiredMixin, LogoutView):
+    success_url = reverse_lazy('app:home')
 
 def criar_conta(request):
     if request.user.is_anonymous:
@@ -97,6 +101,11 @@ def ativar_conta(request, uidb64, token):
         return HttpResponse('Link de ativação inválido!')
 
 
+class TrocarSenha(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
+    form_class = TrocaSenhaForm
+    template_name = 'usuarios/trocar-senha.html'
+    success_url = reverse_lazy('app:home')
+    success_message = 'Senha alterada com sucesso'
 
 # novo_usuario = authenticate(
             #     username=username, password=password1)
