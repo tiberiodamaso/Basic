@@ -5,17 +5,21 @@
 
   <form action="{% url 'usuarios:criar-conta' %}" method="post" class="col-4">
     {% csrf_token %}
-    <div class="mb-3">
-      <img src="" alt="">
-    </div>
-
-    {% if form.errors %}
-    <div class="alert alert-danger">
-      {{ form.errors }}
-    </div>
-    {% endif %}
-
-    {{form.as_p}}
+    {% for field in form %}
+    <p>
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.help_text %}
+        <small style="color: grey">{{ field.help_text }}</small>
+      {% endif %}
+      {% for error in field.errors %}
+        <div class="alert alert-danger text-center alert-dismissible" role="alert">
+          {{error}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </p>
+    {% endfor %}
     <button type="submit" class="btn btn-primary w-100">Criar conta</button>
   </form>
 

@@ -80,7 +80,6 @@ def criar_conta(request):
                 # return render(request, 'email-ativacao.html')
 
             else:
-                form = RegistraUsuarioForm()
                 return render(request, 'usuarios/criar-conta.html', {'form': form})
         else:
             form = RegistraUsuarioForm()
