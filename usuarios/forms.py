@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm
 from .models import Usuario
 from django import forms
 
@@ -27,10 +27,35 @@ class RegistraUsuarioForm(UserCreationForm):
 
 
 class TrocaSenhaForm(PasswordChangeForm):
-    old_password = forms.CharField(label='Senha antiga', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    new_password1 = forms.CharField(label='Nova senha', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    new_password2 = forms.CharField(label='Confirmação', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    old_password = forms.CharField(label='Senha antiga', min_length=8,
+                                   widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password1 = forms.CharField(
+        label='Nova senha', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password2 = forms.CharField(
+        label='Confirmação', min_length=8, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Usuario
         fields = ['old_password', 'new_password1', 'new_password2']
+
+
+class EsqueceuSenha(PasswordResetForm):
+    email = forms.EmailField(
+        label=_('Email'),
+        max_length=254,
+        widget=forms.EmailInput(attrs={"autocomplete": "email", 'class': 'form-control'}),
+    )
+
+
+class EsqueceuSenhaLink(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label=_('Nova senha'),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
+        strip=False,
+        help_text=password_validation.password_validators_help_text_html(),
+    )
+    new_password2 = forms.CharField(
+        label=_('Confirmação'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
+    )
