@@ -5,6 +5,7 @@
   {% if user.is_authenticated %}
   <p>Olá {{user.first_name}}</p>
   <a href="{% url 'usuarios:logout' %}">Logout</a>
+  <a href="{% url 'usuarios:trocar-senha' %}">Trocar senha</a>
   {% else %}
   <a href="{% url 'usuarios:login' %}">Login</a>
   {% endif %}
