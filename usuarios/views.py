@@ -24,12 +24,14 @@ def login(request):
         password = request.POST['password']
 
         if email == '' or password == '':
-            messages.error(request, 'Os campos email e senha não podem ser vazios')
+            messages.error(
+                request, 'Os campos email e senha não podem ser vazios')
             return redirect('usuarios:login')
 
         if Usuario.objects.filter(email=email).exists():
             username = Usuario.objects.get(email=email).username
-            user = auth.authenticate(request, username=username, password=password)
+            user = auth.authenticate(
+                request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
                 return redirect('app:home')
@@ -44,6 +46,7 @@ def login(request):
 
 class Logout(LoginRequiredMixin, LogoutView):
     next_page = reverse_lazy('app:home')
+
 
 def criar_conta(request):
     if request.user.is_anonymous:
@@ -65,7 +68,7 @@ def criar_conta(request):
                     'uid': urlsafe_base64_encode(force_bytes(usuario.pk)),
                     'token': account_activation_token.make_token(usuario),
                 })
-                
+
                 # Sending activation link in terminal
                 subject = 'Ative a sua conta'
                 usuario.email_user(subject, message)
@@ -75,7 +78,7 @@ def criar_conta(request):
                 # email.send()
                 return HttpResponse('Por favor confirme seu endereço de email para ativar sua conta.')
                 # return render(request, 'email-ativacao.html')
-            
+
             else:
                 form = RegistraUsuarioForm()
                 return render(request, 'usuarios/criar-conta.html', {'form': form})
@@ -108,18 +111,18 @@ class TrocarSenha(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
     success_message = 'Senha alterada com sucesso'
 
 # novo_usuario = authenticate(
-            #     username=username, password=password1)
-            # if novo_usuario is not None:
-            #     auth_login(request, novo_usuario)
-            #     messages.success(
-            #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
-            #     return redirect('app:home')# novo_usuario = authenticate(
-            #     username=username, password=password1)
-            # if novo_usuario is not None:
-            #     auth_login(request, novo_usuario)
-            #     messages.success(
-            #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
-            #     return redirect('app:home')
+    #     username=username, password=password1)
+    # if novo_usuario is not None:
+    #     auth_login(request, novo_usuario)
+    #     messages.success(
+    #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
+    #     return redirect('app:home')# novo_usuario = authenticate(
+    #     username=username, password=password1)
+    # if novo_usuario is not None:
+    #     auth_login(request, novo_usuario)
+    #     messages.success(
+    #         request, 'Conta criada com sucesso! Acesse o seu email e click no link de confirmação para validar sua conta')
+    #     return redirect('app:home')
 
 
 # def signup(request):
