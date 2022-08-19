@@ -41,7 +41,7 @@ class TrocaSenhaForm(PasswordChangeForm):
 
 class EsqueceuSenhaForm(PasswordResetForm):
     email = forms.EmailField(
-        label=_('Email'),
+        label=('Email'),
         max_length=254,
         widget=forms.EmailInput(attrs={"autocomplete": "email", 'class': 'form-control'}),
     )
@@ -49,13 +49,13 @@ class EsqueceuSenhaForm(PasswordResetForm):
 
 class EsqueceuSenhaLinkForm(SetPasswordForm):
     new_password1 = forms.CharField(
-        label=_('Nova senha'),
+        label=('Nova senha'),
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
         strip=False,
-        help_text=password_validation.password_validators_help_text_html(),
+        # help_text=password_validation.password_validators_help_text_html(),
     )
     new_password2 = forms.CharField(
-        label=_('Confirmação'),
+        label=('Confirmação'),
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
     )

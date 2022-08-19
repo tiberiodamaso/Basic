@@ -18,6 +18,6 @@
       <button type="submit" class="btn btn-primary w-100">Login</button>
   </form>
   <a href="{% url 'usuarios:criar-conta' %}" class="text-decoration-none">Criar conta</a>
-  <a href="#" class="text-decoration-none">Esqueci a senha</a>
+  <a href="{% url 'usuarios:esqueceu-senha-form' %}" class="text-decoration-none">Esqueci a senha</a>
 </body>
 {% endblock %}
