@@ -1,14 +1,14 @@
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.views import PasswordChangeView, LogoutView
+from django.contrib.auth.views import PasswordChangeView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from usuarios.models import Usuario
-from usuarios.forms import RegistraUsuarioForm, TrocaSenhaForm
+from usuarios.forms import RegistraUsuarioForm, TrocaSenhaForm, EsqueceuSenhaForm, EsqueceuSenhaLinkForm
 from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_str
@@ -109,6 +109,20 @@ class TrocarSenha(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
     template_name = 'usuarios/trocar-senha.html'
     success_url = reverse_lazy('app:home')
     success_message = 'Senha alterada com sucesso'
+
+
+class EsqueceuSenha(PasswordResetView):
+    template_name = 'usuarios/esqueceu-senha.html'
+    form_class = EsqueceuSenhaForm
+    email_template_name = 'usuarios/email-esqueceu-senha.html'
+    from_email = 'email@email.com'
+    success_url = reverse_lazy('esqueceu-senha-email')
+    title = 'Esqueceu a senha'
+    token_generator = default_token_generator
+
+
+class EsqueceuSenhaEmail(PasswordResetDoneView):
+    template_name = "usuarios/esqueceu-senha-email.html"
 
 # novo_usuario = authenticate(
     #     username=username, password=password1)

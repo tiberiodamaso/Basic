@@ -39,7 +39,7 @@ class TrocaSenhaForm(PasswordChangeForm):
         fields = ['old_password', 'new_password1', 'new_password2']
 
 
-class EsqueceuSenha(PasswordResetForm):
+class EsqueceuSenhaForm(PasswordResetForm):
     email = forms.EmailField(
         label=_('Email'),
         max_length=254,
@@ -47,7 +47,7 @@ class EsqueceuSenha(PasswordResetForm):
     )
 
 
-class EsqueceuSenhaLink(SetPasswordForm):
+class EsqueceuSenhaLinkForm(SetPasswordForm):
     new_password1 = forms.CharField(
         label=_('Nova senha'),
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
