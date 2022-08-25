@@ -3,7 +3,7 @@
 
 <body class="container d-flex flex-column h-100 justify-content-center align-items-center">
 
-  <form action="{% url 'usuarios:esqueceu-senha-form' %}" method="post" class="col-4">
+  <form action="{% url 'usuarios:esqueceu-senha-form' %}" method="post" class="col-lg-4">
     {% csrf_token %}
     {% for field in form %}
     <p>

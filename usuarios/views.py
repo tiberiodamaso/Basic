@@ -110,25 +110,28 @@ class TrocarSenha(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
     success_message = 'Senha alterada com sucesso'
 
 
-class EsqueceuSenhaFormView(PasswordResetView):
+class EsqueceuSenhaFormView(SuccessMessageMixin, PasswordResetView):
     template_name = 'usuarios/esqueceu-senha-form.html'
     form_class = EsqueceuSenhaForm
     email_template_name = 'usuarios/corpo-email-esqueceu-senha.html'
-    from_email = 'email@email.com'
+    # html_email_template_name = 'usuarios/corpo-email-esqueceu-senha.html'
+    from_email = 'tiberio.mendonca@meucontato.app.br'
     subject_template_name = "usuarios/assunto.txt"
-    success_url = reverse_lazy('usuarios:esqueceu-senha-msg')
+    success_url = reverse_lazy('usuarios:login')
+    success_message = 'Enviamos um e-mail com instruções para definir sua senha, se uma conta existe com o e-mail que você digitou você deve recebê-lo em breve.'
 
 
-class EsqueceuSenhaMsg(PasswordResetDoneView):
-    template_name = "usuarios/esqueceu-senha-msg.html"
+# class EsqueceuSenhaMsg(PasswordResetDoneView):
+#     template_name = "usuarios/esqueceu-senha-msg.html"
 
-class EsqueceuSenhaLink(PasswordResetConfirmView):
+class EsqueceuSenhaLink(SuccessMessageMixin, PasswordResetConfirmView):
     form_class = EsqueceuSenhaLinkForm
-    success_url = reverse_lazy("usuarios:senha-alterada")
+    success_url = reverse_lazy("usuarios:login")
     template_name = "usuarios/esqueceu-senha-link.html"
+    success_message = 'Sua senha foi definida. Você pode ir em frente e fazer login agora.'
 
-class SenhaAlterada(PasswordResetCompleteView):
-    template_name = "usuarios/senha-alterada.html"
+# class SenhaAlterada(PasswordResetCompleteView):
+#     template_name = "usuarios/senha-alterada.html"
 
 # novo_usuario = authenticate(
     #     username=username, password=password1)
