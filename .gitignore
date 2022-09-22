@@ -131,3 +131,4 @@ dmypy.json
 # Migrations
 **/migrations
 .vscode/launch.json
+.DS_Store
